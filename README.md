@@ -1,6 +1,3 @@
-samp-client
+SA-MP Client
 ===========
-
-= SA-MP Client =
-
-This is a reimplementation of the SA-MP client for Windows using WPF.
+This is a reimplementation of the SA-MP browser client for Windows using WPF.
