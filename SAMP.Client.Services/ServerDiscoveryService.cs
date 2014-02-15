@@ -18,19 +18,19 @@ namespace SAMP.Client.Services
             _configurationService = configurationService;
         }
 
-        public IList<Data.Models.IServer> GetServers()
+        public IList<Data.Models.Server> GetServers()
         {
             return _serverQuery.All();
         }
 
-        public IList<Data.Models.IServer> GetFavouriteServers()
+        public IList<Data.Models.Server> GetFavouriteServers()
         {
             throw new NotImplementedException();
         }
 
-        public IList<Data.Models.IServer> GetHostedServers()
+        public IList<Data.Models.Server> GetHostedServers()
         {
-            _serverQuery.All().Where(x => x.IsHosted);
+            return _serverQuery.Where(x => x.IsHosted);
         }
     }
 }

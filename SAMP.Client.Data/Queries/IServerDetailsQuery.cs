@@ -9,6 +9,6 @@ namespace SAMP.Client.Data.Queries
 {
     public interface IServerDetailsQuery
     {
-        IServer GetDetails(IServer server);
+        Server GetDetails(Server server);
     }
 }

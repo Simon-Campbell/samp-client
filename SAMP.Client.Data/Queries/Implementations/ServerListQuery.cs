@@ -21,12 +21,12 @@ namespace SAMP.Client.Data.Queries.Implementations
             _allActionUrl       = String.Format("{0}/servers", _versionString);
         }
 
-        public List<Models.IServer> All()
+        public List<Models.Server> All()
         {
             return AllEnumerable().ToList();
         }
 
-        private IEnumerable<Models.IServer> AllEnumerable()
+        private IEnumerable<Models.Server> AllEnumerable()
         {
             using (var httpClient = new HttpClient { BaseAddress = new Uri("http://lists.sa-mp.com") })
             {
@@ -43,17 +43,17 @@ namespace SAMP.Client.Data.Queries.Implementations
             }
         }
 
-        private async Task<IEnumerable<Models.IServer>> GetAllTask(HttpClient httpClient)
+        private async Task<IEnumerable<Models.Server>> GetAllTask(HttpClient httpClient)
         {
             return this.ReadResponse(await httpClient.GetStringAsync(_allActionUrl));
         }
 
-        private async Task<IEnumerable<Models.IServer>> GetHostedTask(HttpClient httpClient)
+        private async Task<IEnumerable<Models.Server>> GetHostedTask(HttpClient httpClient)
         {
             return this.ReadResponse(await httpClient.GetStringAsync(_hostedActionUrl));
         }
 
-        public List<Models.IServer> Where(Func<IServer, bool> predicate)
+        public List<Models.Server> Where(Func<Server, bool> predicate)
         {
             return 
                 AllEnumerable()
@@ -61,10 +61,10 @@ namespace SAMP.Client.Data.Queries.Implementations
                 .ToList();
         }
 
-        private IEnumerable<IServer> ReadResponse(string response)
+        private IEnumerable<Server> ReadResponse(string response)
         {
             if (String.IsNullOrEmpty(response))
-                return new List<IServer>();
+                return new List<Server>();
 
             return
                 response
@@ -75,7 +75,7 @@ namespace SAMP.Client.Data.Queries.Implementations
                     var parts = s.Split(':');
 
                     return
-                        (IServer) new Server { IpAddress = parts[0], Port = Int32.Parse(parts[1]) };
+                        new Server { IpAddress = parts[0], Port = Int32.Parse(parts[1]) };
                 });
 
         }

@@ -9,7 +9,7 @@ namespace SAMP.Client.Data.Queries
 {
     public interface IServerListQuery
     {
-        List<IServer> All();
-        List<IServer> Where(Func<IServer, bool> predicate);
+        List<Server> All();
+        List<Server> Where(Func<Server, bool> predicate);
     }
 }

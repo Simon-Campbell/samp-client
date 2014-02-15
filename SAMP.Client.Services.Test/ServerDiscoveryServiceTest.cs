@@ -10,12 +10,12 @@ namespace SAMP.Client.Services.Test
     [TestClass]
     public class ServerDiscoveryServiceTest
     {
-        List<IServer> _servers;
+        List<Server> _servers;
 
         [TestInitialize]
         public void Setup()
         {
-            _servers = new List<IServer>
+            _servers = new List<Server>
             {
 
             };

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SAMP.Client.Data.Models
 {
-    public interface IBrowserSettings
+    public class BrowserSettings
     {
-        string DefaultUsername { get; set; }
-        IList<IServer> FavouriteServers { get; set; }
+        public string DefaultUsername { get; set; }
+        public IList<Server> FavouriteServers { get; set; }
     }
 }

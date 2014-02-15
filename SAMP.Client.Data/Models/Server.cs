@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SAMP.Client.Data.Models
 {
-    public class Server : IServer
+    public class Server
     {
         public bool IsHosted
         {

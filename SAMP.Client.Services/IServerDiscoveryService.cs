@@ -8,8 +8,8 @@ namespace SAMP.Client.Services
 {
     public interface IServerDiscoveryService
     {
-        public IList<IServer> GetServers();
-        public IList<IServer> GetFavouriteServers();
-        public IList<IServer> GetHostedServers();
+        IList<Server> GetServers();
+        IList<Server> GetFavouriteServers();
+        IList<Server> GetHostedServers();
     }
 }

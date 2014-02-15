@@ -9,7 +9,7 @@ namespace SAMP.Client.Services
 {
     public interface IConfigurationService
     {
-        public IBrowserSettings BrowserSettings { get; set; }
-        public IList<IServer> ServerSettings { get; set; }
+        BrowserSettings BrowserSettings { get; set; }
+        IList<Server> ServerSettings { get; set; }
     }
 }

@@ -40,8 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\IBrowserSettings.cs" />
-    <Compile Include="Models\IServer.cs" />
+    <Compile Include="Models\BrowserSettings.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="Queries\IConfigurationQuery.cs" />
     <Compile Include="Queries\Implementations\ServerListQuery.cs" />
