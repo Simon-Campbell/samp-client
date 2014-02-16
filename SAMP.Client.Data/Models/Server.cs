@@ -14,7 +14,7 @@ namespace SAMP.Client.Data.Models
             set;
         }
 
-        public string IpAddress
+        public string Hostname
         {
             get;
             set;
@@ -46,7 +46,7 @@ namespace SAMP.Client.Data.Models
 
             return
                 (
-                    this.IpAddress == server.IpAddress &&
+                    this.Hostname == server.Hostname &&
                     this.Port == server.Port
                 );
         }
@@ -54,7 +54,7 @@ namespace SAMP.Client.Data.Models
         public override int GetHashCode()
         {
             return 
-                this.IpAddress.GetHashCode() ^ this.Port.GetHashCode();
+                this.Hostname.GetHashCode() ^ this.Port.GetHashCode();
         }
     }
 }

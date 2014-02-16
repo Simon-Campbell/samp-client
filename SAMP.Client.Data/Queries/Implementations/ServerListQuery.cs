@@ -75,7 +75,7 @@ namespace SAMP.Client.Data.Queries.Implementations
                     var parts = s.Split(':');
 
                     return
-                        new Server { IpAddress = parts[0], Port = Int32.Parse(parts[1]) };
+                        new Server { Hostname = parts[0], Port = Int32.Parse(parts[1]) };
                 });
 
         }

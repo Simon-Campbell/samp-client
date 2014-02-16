@@ -42,7 +42,9 @@
   <ItemGroup>
     <Compile Include="Models\BrowserSettings.cs" />
     <Compile Include="Models\Server.cs" />
+    <Compile Include="Models\ServerSettings.cs" />
     <Compile Include="Queries\IConfigurationQuery.cs" />
+    <Compile Include="Queries\Implementations\ConfigurationQuery.cs" />
     <Compile Include="Queries\Implementations\ServerListQuery.cs" />
     <Compile Include="Queries\IServerDetailsQuery.cs" />
     <Compile Include="Queries\IServerListQuery.cs" />

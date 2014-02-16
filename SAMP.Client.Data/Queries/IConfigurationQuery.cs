@@ -9,6 +9,6 @@ namespace SAMP.Client.Data.Queries
 {
     public interface IConfigurationQuery
     {
-        BrowserSettings GetSettings();
+        BrowserSettings GetBrowserSettings();
     }
 }

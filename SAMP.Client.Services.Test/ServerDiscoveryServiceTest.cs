@@ -38,6 +38,7 @@ namespace SAMP.Client.Services.Test
             Assert.AreEqual(_servers, service.GetServers());
         }
 
+        [TestMethod]
         public void TestGetsFavourites()
         {
         }
