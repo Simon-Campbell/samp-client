@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace SAMP.Client.Data.Queries.Implementations
         {
             using (var httpClient = new HttpClient { BaseAddress = new Uri("http://lists.sa-mp.com") })
             {
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/3.0 (compatible; SA:MP v0.3z)");
+
                 var allServers      = GetAllTask(httpClient);
                 var hostedServers   = GetHostedTask(httpClient).Result.ToList();
 

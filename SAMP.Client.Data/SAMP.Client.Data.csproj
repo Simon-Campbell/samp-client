@@ -45,6 +45,7 @@
     <Compile Include="Models\ServerSettings.cs" />
     <Compile Include="Queries\IConfigurationQuery.cs" />
     <Compile Include="Queries\Implementations\ConfigurationQuery.cs" />
+    <Compile Include="Queries\Implementations\ServerDetailsQuery.cs" />
     <Compile Include="Queries\Implementations\ServerListQuery.cs" />
     <Compile Include="Queries\IServerDetailsQuery.cs" />
     <Compile Include="Queries\IServerListQuery.cs" />

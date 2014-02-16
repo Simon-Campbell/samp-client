@@ -1,4 +1,6 @@
 ﻿using Ninject.Modules;
+using SAMP.Client.Data.Queries;
+using SAMP.Client.Data.Queries.Implementations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +13,8 @@ namespace SAMP.Client.Services
     {
         public override void Load()
         {
-            Bind<IServerDiscoveryService>().To<ServerDiscoveryService>();
-            Bind<IConfigurationService>().To<ConfigurationService>();
+            Bind<IConfigurationQuery>().To<ConfigurationQuery>();
+            Bind<IServerListQuery>().To<ServerListQuery>();
         }
     }
 }
