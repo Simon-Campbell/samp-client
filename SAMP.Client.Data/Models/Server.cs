@@ -8,29 +8,15 @@ namespace SAMP.Client.Data.Models
 {
     public class Server
     {
-        public string Name
-        {
-            get;
-            set;
-        }
+        public string Name { get; set; }
 
-        public bool IsHosted
-        {
-            get;
-            set;
-        }
+        public bool IsPassworded { get; set; }
 
-        public string Hostname
-        {
-            get;
-            set;
-        }
+        public bool IsHosted { get; set; }
 
-        public int Port
-        {
-            get;
-            set;
-        }
+        public string Hostname { get;set; }
+
+        public int Port { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -44,8 +44,10 @@
   <ItemGroup>
     <Compile Include="ConfigurationService.cs" />
     <Compile Include="IConfigurationService.cs" />
+    <Compile Include="IServerDetailsService.cs" />
     <Compile Include="IServerDiscoveryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerDetailsService.cs" />
     <Compile Include="ServerDiscoveryService.cs" />
     <Compile Include="ServicesInjectionModule.cs" />
   </ItemGroup>

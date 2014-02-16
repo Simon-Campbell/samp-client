@@ -14,6 +14,7 @@ namespace SAMP.Client.WPF.ViewModels
     {
         readonly IServerDiscoveryService _serverDiscoveryService;
         readonly IConfigurationService _configurationService;
+        readonly IServerDetailsService _serverDetailsService;
 
         IEnumerable<Server> _servers;
 
@@ -48,15 +49,34 @@ namespace SAMP.Client.WPF.ViewModels
 
         public Server SelectedServer { get; set; }
 
-        public MainViewModel(IServerDiscoveryService serverDiscoveryService, IConfigurationService configurationService)
+        public MainViewModel(
+            IServerDiscoveryService serverDiscoveryService, 
+            IConfigurationService configurationService,
+            IServerDetailsService serverDetailsService)
         {
             _serverDiscoveryService = serverDiscoveryService;
             _configurationService = configurationService;
+            _serverDetailsService = serverDetailsService;
         }
 
         public async void ShowAllServers()
         {
             Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+
+            var firstServers = Servers.Take(10);
+            var tasks = new List<Task>();
+
+            foreach (var server in firstServers) 
+            {
+                var task = Task
+                    .Run(() => _serverDetailsService.GetDetails(server))
+                    .ContinueWith((t) => NotifyOfPropertyChange(() => Servers));
+
+                tasks.Add(task);
+            }
+
+            // Wait until they have all completed!
+            await Task.WhenAll(tasks);
         }
 
         public bool CanShowAllServers

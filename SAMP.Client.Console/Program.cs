@@ -25,11 +25,21 @@ namespace SAMP.Client.Console
                 case "config":
                     TestConfiguration();
                     break;
+                case "info-query":
+                    TestInformationQuery();
+                    break;
                 default:
                     System.Console.WriteLine("Unsure how to handle '{0}'", input);
                     break;
             }
             System.Console.Read();
+        }
+
+        private static void TestInformationQuery()
+        {
+            var query = new ServerDetailsQuery();
+
+            query.GetDetails(new Server { Hostname = "littlewhiteys.co.uk", Port = 7778 });
         }
 
         static void TestListQuery()

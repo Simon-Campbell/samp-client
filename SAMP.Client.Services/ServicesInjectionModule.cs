@@ -15,6 +15,7 @@ namespace SAMP.Client.Services
         {
             Bind<IConfigurationQuery>().To<ConfigurationQuery>();
             Bind<IServerListQuery>().To<ServerListQuery>();
+            Bind<IServerDetailsQuery>().To<ServerDetailsQuery>();
         }
     }
 }
