@@ -35,7 +35,7 @@ namespace SAMP.Client.Console
             System.Console.Read();
         }
 
-        private static void TestInformationQuery()
+        static void TestInformationQuery()
         {
             var query = new ServerDetailsQuery();
 

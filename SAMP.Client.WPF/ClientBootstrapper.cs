@@ -26,7 +26,7 @@ namespace SAMP.Client.WPF
                 new ClientInjectionModule(),
                 new ServicesInjectionModule());
 
-            _kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
+            _kernel.Bind<IWindowManager>().To<MetroWindowManager>().InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
         }
 

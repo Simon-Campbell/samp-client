@@ -17,6 +17,8 @@ namespace SAMP.Client.WPF.ViewModels
         readonly IServerDetailsService _serverDetailsService;
 
         IEnumerable<Server> _servers;
+        IEnumerable<ServerListViewModel> _serverLists;
+        ServerListViewModel _selectedServerList;
 
         public string Username
         {
@@ -32,17 +34,55 @@ namespace SAMP.Client.WPF.ViewModels
             }
         }
 
-        public IEnumerable<Server> Servers
+        public IEnumerable<ServerListViewModel> ServerLists
+        {
+            get { return _serverLists; }
+            set 
+            { 
+                _serverLists = value;
+
+                NotifyOfPropertyChange(() => ServerLists);
+            }
+        }
+
+        public ServerListViewModel SelectedServerList
+        {
+            get { return _selectedServerList; }
+            set
+            {
+                _selectedServerList = value;
+                _selectedServerList.Update();
+            }
+        }
+
+        public int TotalServers
+        { 
+            get 
+            {
+                if (_servers != null)
+                    return _servers.Count();
+
+                return 0;
+            }
+        }
+
+        public string TotalServersStatus
         {
             get
             {
-                return _servers;
+                return String.Format("{0}/{1} shown", SelectedServerList.TotalServers, TotalServers);
             }
+        }
+
+        public IEnumerable<Server> Servers
+        {
+            get { return _servers; }
             private set 
             {
                 _servers = value;
 
                 NotifyOfPropertyChange(() => Servers);
+                NotifyOfPropertyChange(() => TotalServersStatus);
                 NotifyOfPropertyChange(() => CanShowAllServers);
             }
         }
@@ -57,27 +97,51 @@ namespace SAMP.Client.WPF.ViewModels
             _serverDiscoveryService = serverDiscoveryService;
             _configurationService = configurationService;
             _serverDetailsService = serverDetailsService;
+
+            CreateTabs();
         }
 
-        public async void ShowAllServers()
+        private void CreateTabs()
         {
-            Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+            var tabs = new List<ServerListViewModel>();
 
-            var firstServers = Servers.Take(10);
-            var tasks = new List<Task>();
+            tabs.Add(new ServerListViewModel("Favourites", null));
+            tabs.Add(new ServerListViewModel("All", ShowAllServers));
+            tabs.Add(new ServerListViewModel("Hosted", () => Task.FromResult(Servers.Where(s => s.IsHosted))));
 
-            foreach (var server in firstServers) 
+            foreach (var tab in tabs)
             {
-                var task = Task
-                    .Run(() => _serverDetailsService.GetDetails(server))
-                    .ContinueWith((t) => NotifyOfPropertyChange(() => Servers));
-
-                tasks.Add(task);
+                tab.PropertyChanged += tab_PropertyChanged;
             }
 
-            // Wait until they have all completed!
-            await Task.WhenAll(tasks);
+            ServerLists = tabs;
+            SelectedServerList = tabs[0];
         }
+
+        void tab_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "TotalServers") this.NotifyOfPropertyChange(() => TotalServersStatus);
+        }
+        
+        public async Task<IEnumerable<Server>> ShowAllServers()
+        {
+            return Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+        }
+
+        //var firstServers = Servers.Take(10);
+        //var tasks = new List<Task>();
+
+        //foreach (var server in firstServers) 
+        //{
+        //    var task = Task
+        //        .Run(() => _serverDetailsService.GetDetails(server))
+        //        .ContinueWith((t) => NotifyOfPropertyChange(() => Servers));
+
+        //    tasks.Add(task);
+        //}
+
+        //// Wait until they have all completed!
+        //await Task.WhenAll(tasks);
 
         public bool CanShowAllServers
         {
