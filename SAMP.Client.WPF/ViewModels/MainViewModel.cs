@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace SAMP.Client.WPF.ViewModels
 {
-    public class MainViewModel : PropertyChangedBase, IDeactivate
+    public class MainViewModel : PropertyChangedBase, IDeactivate, IHaveDisplayName
     {
         readonly IServerDiscoveryService _serverDiscoveryService;
         readonly IConfigurationService _configurationService;
@@ -98,7 +98,14 @@ namespace SAMP.Client.WPF.ViewModels
             _configurationService = configurationService;
             _serverDetailsService = serverDetailsService;
 
+            SetWindowTitle();
+
             CreateTabs();
+        }
+
+        private void SetWindowTitle()
+        {
+            DisplayName = "San Andreas Multiplayer";
         }
 
         private void CreateTabs()
@@ -106,8 +113,8 @@ namespace SAMP.Client.WPF.ViewModels
             var tabs = new List<ServerListViewModel>();
 
             tabs.Add(new ServerListViewModel("Favourites", null));
-            tabs.Add(new ServerListViewModel("All", ShowAllServers));
-            tabs.Add(new ServerListViewModel("Hosted", () => Task.FromResult(Servers.Where(s => s.IsHosted))));
+            tabs.Add(new ServerListViewModel("All", GetAllServersAsync));
+            tabs.Add(new ServerListViewModel("Hosted", GetHostedServersAsync));
 
             foreach (var tab in tabs)
             {
@@ -122,10 +129,25 @@ namespace SAMP.Client.WPF.ViewModels
         {
             if (e.PropertyName == "TotalServers") this.NotifyOfPropertyChange(() => TotalServersStatus);
         }
-        
-        public async Task<IEnumerable<Server>> ShowAllServers()
+
+        public async Task<IEnumerable<Server>> GetHostedServersAsync()
         {
-            return Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+            if (Servers == null || !Servers.Any())
+            {
+                await GetAllServersAsync();
+            }
+
+            return Servers.Where(s => s.IsHosted);
+        }
+
+        public async Task<IEnumerable<Server>> GetAllServersAsync()
+        {
+            if (Servers == null || !Servers.Any())
+            {
+                Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+            }
+
+            return Servers;
         }
 
         //var firstServers = Servers.Take(10);
@@ -161,5 +183,7 @@ namespace SAMP.Client.WPF.ViewModels
             if (Deactivated != null) 
                 Deactivated(this, new DeactivationEventArgs { WasClosed = close });
         }
+
+        public string DisplayName { get; set; }
     }
 }
