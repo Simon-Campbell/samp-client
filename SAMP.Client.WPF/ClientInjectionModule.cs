@@ -15,6 +15,7 @@ namespace SAMP.Client.WPF
             Bind<IServerDiscoveryService>().To<ServerDiscoveryService>();
             Bind<IConfigurationService>().To<ConfigurationService>();
             Bind<IServerDetailsService>().To<ServerDetailsService>();
+            Bind<IPingService>().To<CachedPingService>();
         }
     }
 }

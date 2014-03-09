@@ -14,7 +14,7 @@ namespace SAMP.Client.Data.Models
 
         public bool IsHosted { get; set; }
 
-        public string Hostname { get;set; }
+        public string HostName { get;set; }
 
         public int Port { get; set; }
 
@@ -38,7 +38,7 @@ namespace SAMP.Client.Data.Models
 
             return
                 (
-                    this.Hostname == server.Hostname &&
+                    this.HostName == server.HostName &&
                     this.Port == server.Port
                 );
         }
@@ -46,7 +46,15 @@ namespace SAMP.Client.Data.Models
         public override int GetHashCode()
         {
             return
-                this.Hostname.GetHashCode() ^ this.Port.GetHashCode();
+                this.HostName.GetHashCode() ^ this.Port.GetHashCode();
         }
+
+        public int CurrentPlayerCount { get; set; }
+
+        public int MaximumPlayerCount { get; set; }
+
+        public string GameMode { get; set; }
+
+        public string MapName { get; set; }
     }
 }

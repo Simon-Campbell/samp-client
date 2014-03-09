@@ -39,7 +39,7 @@ namespace SAMP.Client.Console
         {
             var query = new ServerDetailsQuery();
 
-            query.GetDetails(new Server { Hostname = "littlewhiteys.co.uk", Port = 7778 });
+            query.GetDetails(new Server { HostName = "littlewhiteys.co.uk", Port = 7778 });
         }
 
         static void TestListQuery()
@@ -52,13 +52,13 @@ namespace SAMP.Client.Console
             System.Console.WriteLine("First 10 Servers:");
             foreach (var server in allFirst10)
             {
-                System.Console.WriteLine(String.Format("{0}:{1} (IsHosted = {2})", server.Hostname, server.Port, server.IsHosted));
+                System.Console.WriteLine(String.Format("{0}:{1} (IsHosted = {2})", server.HostName, server.Port, server.IsHosted));
             }
 
             System.Console.WriteLine("First 10 Hosted Servers:");
             foreach (var server in hostedFirst10)
             {
-                System.Console.WriteLine(String.Format("{0}:{1} (IsHosted = {2})", server.Hostname, server.Port, server.IsHosted));
+                System.Console.WriteLine(String.Format("{0}:{1} (IsHosted = {2})", server.HostName, server.Port, server.IsHosted));
             }
         }
 
@@ -81,7 +81,7 @@ namespace SAMP.Client.Console
             {
                 settings.FavouriteServers = new List<Server> 
                 {
-                    new Server { Hostname = "localhost", Port = 7777 }
+                    new Server { HostName = "localhost", Port = 7777 }
                 };
 
                 System.Console.WriteLine("Added localhost to your favourite servers");

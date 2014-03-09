@@ -15,7 +15,7 @@ namespace SAMP.Client.Data.Queries.Implementations
     {
         public Server GetDetails(Models.Server server)
         {
-            var address = Dns.GetHostAddresses(server.Hostname).FirstOrDefault();
+            var address = Dns.GetHostAddresses(server.HostName).FirstOrDefault();
 
             if (address != null)
             {
@@ -83,21 +83,45 @@ namespace SAMP.Client.Data.Queries.Implementations
                 if (reader.ReadChar() != 'i')
                     return server;
 
-                var results = new 
-                { 
-                    IsPassworded       = Convert.ToBoolean(reader.ReadByte()),
-                    CurrentPlayerCount = (int) reader.ReadInt16(),
-                    MaximumPlayerCount = (int) reader.ReadInt16(),
-                    Name        = new String(reader.ReadChars(reader.ReadInt32())),
-                    Gamemode    = new String(reader.ReadChars(reader.ReadInt32())),
-                    Mapname     = new String(reader.ReadChars(reader.ReadInt32()))
-                };
-
-                server.Name = results.Name;
+                try
+                {
+                    SetServerDetails(server, reader);
+                }
+                catch
+                {
+                    Debug.WriteLine("Could not fully set all server details.");
+                }
             }
 
             return server;
         }
 
+        private void SetServerDetails(Server server, BinaryReader reader)
+        {
+            server.IsPassworded = Convert.ToBoolean(reader.ReadByte());
+            server.CurrentPlayerCount = (int)reader.ReadInt16();
+            server.MaximumPlayerCount = (int)reader.ReadInt16();
+
+            int serverNameLength = reader.ReadInt32();
+            if (serverNameLength > 0)
+            {
+                var serverName = reader.ReadChars(serverNameLength);
+                server.Name = new String(serverName);
+            }
+
+            int gamemodeLength = reader.ReadInt32();
+            if (gamemodeLength > 0)
+            {
+                var gamemode = reader.ReadChars(gamemodeLength);
+                server.GameMode = new String(gamemode);
+            }
+
+            int mapNameLength = reader.ReadInt32();
+            if (mapNameLength > 0)
+            {
+                var mapName = reader.ReadChars(mapNameLength);
+                server.MapName = new String(mapName);
+            }
+        }
     }
 }

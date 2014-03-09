@@ -1,7 +1,10 @@
 ﻿<UserControl x:Class="SAMP.Client.WPF.Views.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro">
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:b="clr-namespace:SAMP.Client.WPF.Behaviours"
+        xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro">
     <Grid Height="600" Width="800">
 
         <Grid.RowDefinitions>
@@ -15,43 +18,53 @@
             <TabControl.Resources>
                 <Style TargetType="controls:MetroProgressBar" x:Shared="False">
                     <Setter Property="Visibility" Value="Collapsed"/>
-                    
+
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsLoading}" Value="True">
                             <Setter Property="Visibility" Value="Visible"/>
                         </DataTrigger>
-                        
                         <DataTrigger Binding="{Binding IsLoading}" Value="False">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-                
+
                 <Style TargetType="controls:MetroTabItem" x:Shared="False">
                     <Setter Property="ContentTemplate">
                         <Setter.Value>
                             <DataTemplate>
-                                <StackPanel>
-                                    <ListView ItemsSource="{Binding Servers}">
+                                <Grid>
+                                    <ListView 
+                                        Name="ServerList" 
+                                        ItemsSource="{Binding ServerListItems}" VirtualizingPanel.IsVirtualizing="True"
+                                        b:ListViewScrolledBehaviour.ScrolledCommand="ServerListScrolled"
+                                        cal:Message.Attach="[Event ScrollViewer.ScrollChanged] = [Action ServerListScrolled]">
                                         <ListView.View>
                                             <GridView>
-                                                <GridViewColumn Header="Name"
-                                                DisplayMemberBinding="{Binding Name}"
-                                                Width="250" />
-
-                                                <GridViewColumn Header="Hostname"
-                                                DisplayMemberBinding="{Binding Hostname}"
-                                                Width="120" />
-
-                                                <GridViewColumn Header="Port"
-                                                DisplayMemberBinding="{Binding Port}" 
-                                                Width="50" />
+                                                <GridViewColumn Header="Country">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Image Source="{Binding CountryImage}" Width="23.5" Height="35"></Image>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="250" />
+                                                <GridViewColumn Header="Host" DisplayMemberBinding="{Binding Hostname}" Width="120" />
+                                                <GridViewColumn Header="Port" DisplayMemberBinding="{Binding Port}" Width="50" />
+                                                <GridViewColumn Header="Ping" DisplayMemberBinding="{Binding Ping}" Width="50" />
+                                                <GridViewColumn Header="Fav." Width="50">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock x:Name="ToggleFavourite" Tag="{Binding Name}" cal:Message.Attach="[Event PreviewMouseDown] = [Action ToggleFavourite]" Text="{Binding FavouriteActionSymbol}"  Width="40" Height="40" FontFamily="Segoe UI Symbol" FontSize="26" VerticalAlignment="Center"  />
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
                                             </GridView>
                                         </ListView.View>
                                     </ListView>
 
-                                    <controls:MetroProgressBar IsIndeterminate="True" IsEnabled="{Binding IsLoading}" VerticalAlignment="Bottom" Height="Auto"/>
-                                </StackPanel>
+                                    <controls:MetroProgressBar IsIndeterminate="True" VerticalAlignment="Bottom" Height="Auto" />
+                                </Grid>
                             </DataTemplate>
                         </Setter.Value>
                     </Setter>
@@ -68,7 +81,7 @@
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock FontSize="24" HorizontalAlignment="Right" Text="{Binding TotalServersStatus}" VerticalAlignment="Center"></TextBlock>
-            <Button Margin="5" Style="{DynamicResource MetroCircleButtonStyle}" Width="40" Height="40" FontFamily="Segoe UI Symbol" FontSize="16" VerticalAlignment="Center">&#xE149;</Button>
+            <Button x:Name="RefreshSelectedList" Style="{DynamicResource MetroCircleButtonStyle}" Width="40" Height="40" FontFamily="Segoe UI Symbol" FontSize="16" VerticalAlignment="Center" VerticalContentAlignment="Center">&#xE149;</Button>
         </StackPanel>
     </Grid>
 </UserControl>

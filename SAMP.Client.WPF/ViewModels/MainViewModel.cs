@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SAMP.Client.WPF.ViewModels
 {
@@ -15,10 +16,13 @@ namespace SAMP.Client.WPF.ViewModels
         readonly IServerDiscoveryService _serverDiscoveryService;
         readonly IConfigurationService _configurationService;
         readonly IServerDetailsService _serverDetailsService;
+        readonly IPingService _pingService;
 
-        IEnumerable<Server> _servers;
-        IEnumerable<ServerListViewModel> _serverLists;
+        IObservableCollection<Server> _servers;
+        IObservableCollection<ServerListViewModel> _serverLists;
+
         ServerListViewModel _selectedServerList;
+        DispatcherTimer _dispatcherTimer;
 
         public string Username
         {
@@ -34,7 +38,7 @@ namespace SAMP.Client.WPF.ViewModels
             }
         }
 
-        public IEnumerable<ServerListViewModel> ServerLists
+        public IObservableCollection<ServerListViewModel> ServerLists
         {
             get { return _serverLists; }
             set 
@@ -74,7 +78,7 @@ namespace SAMP.Client.WPF.ViewModels
             }
         }
 
-        public IEnumerable<Server> Servers
+        public IObservableCollection<Server> Servers
         {
             get { return _servers; }
             private set 
@@ -92,15 +96,37 @@ namespace SAMP.Client.WPF.ViewModels
         public MainViewModel(
             IServerDiscoveryService serverDiscoveryService, 
             IConfigurationService configurationService,
-            IServerDetailsService serverDetailsService)
+            IServerDetailsService serverDetailsService,
+            IPingService pingService)
         {
             _serverDiscoveryService = serverDiscoveryService;
             _configurationService = configurationService;
             _serverDetailsService = serverDetailsService;
+            _pingService = pingService;
 
             SetWindowTitle();
 
+            CreatePingTimer();
             CreateTabs();
+        }
+
+        private void CreatePingTimer()
+        {
+            _dispatcherTimer = new DispatcherTimer();
+            _dispatcherTimer.Interval = TimeSpan.FromSeconds(2);
+            _dispatcherTimer.Tick += (sender, args) => 
+            {
+                if (_selectedServerList.ServerListItems == null) 
+                    return;
+
+                Task.Run(() => { 
+                    foreach (var server in _selectedServerList.ServerListItems.Take(16))
+                    {
+                        server.Ping = _pingService.GetPing(server.Hostname);
+                    }
+                });
+            };
+            _dispatcherTimer.Start();
         }
 
         private void SetWindowTitle()
@@ -110,11 +136,11 @@ namespace SAMP.Client.WPF.ViewModels
 
         private void CreateTabs()
         {
-            var tabs = new List<ServerListViewModel>();
+            var tabs = new BindableCollection<ServerListViewModel>();
 
-            tabs.Add(new ServerListViewModel("Favourites", null));
-            tabs.Add(new ServerListViewModel("All", GetAllServersAsync));
-            tabs.Add(new ServerListViewModel("Hosted", GetHostedServersAsync));
+            tabs.Add(new ServerListViewModel("Favourites", GetFavouritesAsync, _serverDetailsService));
+            tabs.Add(new ServerListViewModel("All", GetAllServersAsync, _serverDetailsService));
+            tabs.Add(new ServerListViewModel("Hosted", GetHostedServersAsync, _serverDetailsService));
 
             foreach (var tab in tabs)
             {
@@ -127,7 +153,44 @@ namespace SAMP.Client.WPF.ViewModels
 
         void tab_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "TotalServers") this.NotifyOfPropertyChange(() => TotalServersStatus);
+            if (e.PropertyName == "TotalServers")
+            {
+                this.NotifyOfPropertyChange(() => TotalServersStatus);
+            }
+        }
+
+        private void SaveFavourites(IEnumerable<ServerListItemViewModel> previous, IEnumerable<ServerListItemViewModel> updated)
+        {
+            var favourites = previous != null? previous.Where(serverViewModel => serverViewModel.IsFavourited).ToList() : new List<ServerListItemViewModel>();
+
+            foreach (var serverViewModel in updated)
+            {
+                serverViewModel.IsFavourited = favourites.Any(favourite => favourite.Hostname == serverViewModel.Hostname && favourite.Port == serverViewModel.Port);
+            }
+
+            _configurationService.BrowserSettings.FavouriteServers = favourites.Select(favourite => new Server { HostName = favourite.Hostname, Port = favourite.Port }).ToList();
+        }
+
+        public async Task<IEnumerable<Server>> GetFavouritesAsync()
+        {
+            return await Task.Run(() => {
+                var favourites = _configurationService.BrowserSettings.FavouriteServers;
+
+                if (favourites == null)
+                {
+                    favourites = new List<Server>();
+                }
+
+                if (!favourites.Any())
+                {
+                    favourites.Add(new Server {
+                        HostName = "littlewhiteys.co.uk",
+                        Port     = 7778
+                    });
+                }
+
+                return (_configurationService.BrowserSettings.FavouriteServers = favourites);
+            });
         }
 
         public async Task<IEnumerable<Server>> GetHostedServersAsync()
@@ -144,26 +207,11 @@ namespace SAMP.Client.WPF.ViewModels
         {
             if (Servers == null || !Servers.Any())
             {
-                Servers = await Task.Run(() => _serverDiscoveryService.GetServers());
+                Servers = new BindableCollection<Server>(await Task.Run(() => _serverDiscoveryService.GetServers()));
             }
 
             return Servers;
         }
-
-        //var firstServers = Servers.Take(10);
-        //var tasks = new List<Task>();
-
-        //foreach (var server in firstServers) 
-        //{
-        //    var task = Task
-        //        .Run(() => _serverDetailsService.GetDetails(server))
-        //        .ContinueWith((t) => NotifyOfPropertyChange(() => Servers));
-
-        //    tasks.Add(task);
-        //}
-
-        //// Wait until they have all completed!
-        //await Task.WhenAll(tasks);
 
         public bool CanShowAllServers
         {
@@ -178,12 +226,23 @@ namespace SAMP.Client.WPF.ViewModels
             if (AttemptingDeactivation != null) 
                 AttemptingDeactivation(this, new DeactivationEventArgs());
 
-            _configurationService.BrowserSettings.Save();
+            var browserSettings = _configurationService.BrowserSettings;
+            browserSettings.Save();
             
             if (Deactivated != null) 
                 Deactivated(this, new DeactivationEventArgs { WasClosed = close });
         }
 
         public string DisplayName { get; set; }
+
+        public bool CanRefreshSelectedList
+        {
+            get { return true; }
+        }
+
+        public void RefreshSelectedList()
+        {
+            SelectedServerList.Update();
+        }
     }
 }
