@@ -21,7 +21,7 @@ namespace SAMP.Client.WPF
             new ResourceDictionary
             { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml", UriKind.RelativeOrAbsolute) },
             new ResourceDictionary
-            { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Amber.xaml", UriKind.RelativeOrAbsolute) },
+            { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/Orange.xaml", UriKind.RelativeOrAbsolute) },
             new ResourceDictionary
             { Source = new Uri("pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml", UriKind.RelativeOrAbsolute) },
             new ResourceDictionary

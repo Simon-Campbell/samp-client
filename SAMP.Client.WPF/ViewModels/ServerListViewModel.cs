@@ -138,19 +138,18 @@ namespace SAMP.Client.WPF.ViewModels
 
         public ICommand ServerListScrolled
         {
-            get { 
+            get 
+            { 
                 return _serverListScrolled; 
             }
         }
 
-        //public void ServerListScrolled()
-        //{
-        //    Debug.WriteLine("Scrolled!");
-        //}
-
-        //public void ServerListScrolled(object src)
-        //{
-        //    Debug.WriteLine(src.ToString());
-        //}
+        public void LaunchServer(ServerListItemViewModel model)
+        {
+            var process = new Process();
+            process.StartInfo = new ProcessStartInfo(@"samp://littlewhiteys.co.uk:7778");
+            //process.StartInfo = new ProcessStartInfo(@"C:\Program Files (x86)\Rockstar Games\GTA San Andreas\GTA_SA.EXE", "-c -n Test -h littlewhiteys.co.uk -p 7778");
+            process.Start();
+        }
     }
 }

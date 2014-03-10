@@ -38,7 +38,9 @@
                                         Name="ServerList" 
                                         ItemsSource="{Binding ServerListItems}" VirtualizingPanel.IsVirtualizing="True"
                                         b:ListViewScrolledBehaviour.ScrolledCommand="ServerListScrolled"
-                                        cal:Message.Attach="[Event ScrollViewer.ScrollChanged] = [Action ServerListScrolled]">
+                                        cal:Message.Attach="
+                                        [Event ScrollViewer.ScrollChanged] = [Action ServerListScrolled];
+                                        [Event MouseDoubleClick] = [Action LaunchServer($dataContext)]">
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn Header="Country">

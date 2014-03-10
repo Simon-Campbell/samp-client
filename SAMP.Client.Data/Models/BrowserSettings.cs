@@ -59,6 +59,26 @@ namespace SAMP.Client.Data.Models
                 this["RecentServers"] = value;
             }
         }
+
+        [UserScopedSetting]
+        public string GameDirectory
+        {
+            get 
+            {
+                var dir = (string)(this["GameDirectory"]);
+
+                if (String.IsNullOrWhiteSpace(dir))
+                {
+                    dir = @"C:\Program Files (x86)\Rockstar Games\GTA San Andreas";
+                }
+
+                return dir;
+            }
+            set 
+            {
+                this["GameDirectory"] = value;
+            }
+        }
     }
 
 }
