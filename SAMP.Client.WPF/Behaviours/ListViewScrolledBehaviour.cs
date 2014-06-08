@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using SAMP.Client.WPF.Extensions;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 
 namespace SAMP.Client.WPF.Behaviours
 {
@@ -13,7 +16,7 @@ namespace SAMP.Client.WPF.Behaviours
     {
         public static ICommand GetScrolledCommand(DependencyObject target)
         {
-            var scrolledCommandName = (string) target.GetValue(ScrolledCommandProperty);
+            var scrolledCommandName = (string)target.GetValue(ScrolledCommandProperty);
             var listView = target as ListView;
 
             if (listView != null)
@@ -28,9 +31,9 @@ namespace SAMP.Client.WPF.Behaviours
 
                 var contextType = dataContext.GetType();
                 var commandProperty = contextType.GetProperty(scrolledCommandName);
-                
+
                 return
-                    (ICommand) commandProperty.GetValue(dataContext);
+                    (ICommand)commandProperty.GetValue(dataContext);
             }
 
             return null;
@@ -41,11 +44,8 @@ namespace SAMP.Client.WPF.Behaviours
             target.SetValue(ScrolledCommandProperty, value);
         }
 
-        public static readonly DependencyProperty ScrolledCommandProperty 
+        public static readonly DependencyProperty ScrolledCommandProperty
             = DependencyProperty.RegisterAttached("ScrolledCommand", typeof(string), typeof(ListViewScrolledBehaviour), new UIPropertyMetadata(string.Empty, OnScrolledCommandChanged));
-
-        private static readonly ScrollChangedEventHandler ScrollChangedEventHandler
-            = new ScrollChangedEventHandler(OnScrolled);
 
         private static void OnScrolledCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -54,30 +54,53 @@ namespace SAMP.Client.WPF.Behaviours
             if (listView == null)
                 return;
 
-            var oldValueString = e.OldValue as string;
-            var newValueString = e.NewValue as string;
+            listView.Loaded += (_sender, _e) =>
+            {
+                var scrollViewer = listView.GetVisualChild<ScrollViewer>();
 
-            if (String.IsNullOrEmpty(oldValueString))
-            {
-                listView.AddHandler(ScrollViewer.ScrollChangedEvent, ScrollChangedEventHandler);
-            } 
-            else if (String.IsNullOrEmpty(newValueString))
-            {
-                listView.RemoveHandler(ScrollViewer.ScrollChangedEvent, ScrollChangedEventHandler);
-            }
+                if (scrollViewer == null)
+                    return;
+
+                var scrollBar = scrollViewer.Template.FindName("PART_VerticalScrollBar", scrollViewer) as ScrollBar;
+
+                if (scrollBar == null)
+                    return;
+
+                var oldValueString = e.OldValue as string;
+                var newValueString = e.NewValue as string;
+
+                if (String.IsNullOrEmpty(oldValueString))
+                {
+                    scrollBar.ValueChanged += scrollBar_ValueChanged;
+                }
+                else if (String.IsNullOrEmpty(newValueString))
+                {
+                    scrollBar.ValueChanged -= scrollBar_ValueChanged;
+                }
+            };
         }
 
-        private static void OnScrolled(object sender, ScrollChangedEventArgs e)
+        static void scrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var listView = sender as ListView;
+            var scrollBar = sender as ScrollBar;
 
-            if (listView != null)
-            {
-                var command = GetScrolledCommand(listView);
+            if (scrollBar == null)
+                return;
 
-                if (command != null && command.CanExecute(e.VerticalOffset))
-                    command.Execute(e.VerticalOffset);
-            }
+            var scrollViewer = scrollBar.GetVisualParent<ScrollViewer>();
+
+            if (scrollViewer == null)
+                return;
+
+            var listView = scrollViewer.GetVisualParent<ListView>();
+
+            if (listView == null)
+                return;
+
+            var command = GetScrolledCommand(listView);
+           
+            if (command != null && command.CanExecute(scrollViewer.VerticalOffset))
+                command.Execute(new { scrollViewer.VerticalOffset, scrollViewer.ViewportHeight });
         }
     }
 }

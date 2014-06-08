@@ -4,7 +4,7 @@
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:b="clr-namespace:SAMP.Client.WPF.Behaviours"
-        xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro">
+        xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform">
     <Grid Height="600" Width="800">
 
         <Grid.RowDefinitions>
@@ -34,7 +34,13 @@
                         <Setter.Value>
                             <DataTemplate>
                                 <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"></RowDefinition>
+                                        <RowDefinition Height="60"></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    
                                     <ListView 
+                                        Grid.Row="0"
                                         Name="ServerList" 
                                         ItemsSource="{Binding ServerListItems}" VirtualizingPanel.IsVirtualizing="True"
                                         b:ListViewScrolledBehaviour.ScrolledCommand="ServerListScrolled"
@@ -66,6 +72,12 @@
                                     </ListView>
 
                                     <controls:MetroProgressBar IsIndeterminate="True" VerticalAlignment="Bottom" Height="Auto" />
+
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock FontSize="24" HorizontalAlignment="Right" Text="{Binding VisibleServersStatus}" VerticalAlignment="Center"></TextBlock>
+                                        <Button x:Name="RefreshSelectedList" Style="{DynamicResource MetroCircleButtonStyle}" Width="40" Height="40" FontFamily="Segoe UI Symbol" FontSize="16" VerticalAlignment="Center" VerticalContentAlignment="Center">&#xE149;</Button>
+                                    </StackPanel>
+
                                 </Grid>
                             </DataTemplate>
                         </Setter.Value>
@@ -80,10 +92,5 @@
                 </DataTemplate>
             </TabControl.ItemTemplate>
         </controls:MetroAnimatedSingleRowTabControl>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <TextBlock FontSize="24" HorizontalAlignment="Right" Text="{Binding TotalServersStatus}" VerticalAlignment="Center"></TextBlock>
-            <Button x:Name="RefreshSelectedList" Style="{DynamicResource MetroCircleButtonStyle}" Width="40" Height="40" FontFamily="Segoe UI Symbol" FontSize="16" VerticalAlignment="Center" VerticalContentAlignment="Center">&#xE149;</Button>
-        </StackPanel>
     </Grid>
 </UserControl>

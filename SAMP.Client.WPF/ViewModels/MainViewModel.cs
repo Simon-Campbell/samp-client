@@ -70,14 +70,6 @@ namespace SAMP.Client.WPF.ViewModels
             }
         }
 
-        public string TotalServersStatus
-        {
-            get
-            {
-                return String.Format("{0}/{1} shown", SelectedServerList.TotalServers, TotalServers);
-            }
-        }
-
         public IObservableCollection<Server> Servers
         {
             get { return _servers; }
@@ -86,7 +78,6 @@ namespace SAMP.Client.WPF.ViewModels
                 _servers = value;
 
                 NotifyOfPropertyChange(() => Servers);
-                NotifyOfPropertyChange(() => TotalServersStatus);
                 NotifyOfPropertyChange(() => CanShowAllServers);
             }
         }
@@ -142,21 +133,8 @@ namespace SAMP.Client.WPF.ViewModels
             tabs.Add(new ServerListViewModel("All", GetAllServersAsync, _serverDetailsService));
             tabs.Add(new ServerListViewModel("Hosted", GetHostedServersAsync, _serverDetailsService));
 
-            foreach (var tab in tabs)
-            {
-                tab.PropertyChanged += tab_PropertyChanged;
-            }
-
             ServerLists = tabs;
             SelectedServerList = tabs[0];
-        }
-
-        void tab_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "TotalServers")
-            {
-                this.NotifyOfPropertyChange(() => TotalServersStatus);
-            }
         }
 
         private void SaveFavourites(IEnumerable<ServerListItemViewModel> previous, IEnumerable<ServerListItemViewModel> updated)

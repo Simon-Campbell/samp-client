@@ -92,6 +92,7 @@ namespace SAMP.Client.WPF.ViewModels
                 NotifyOfPropertyChange(() => Servers);
                 NotifyOfPropertyChange(() => ServerListItems);
                 NotifyOfPropertyChange(() => TotalServers);
+                NotifyOfPropertyChange(() => VisibleServersStatus);
             }
         }
 
@@ -131,11 +132,14 @@ namespace SAMP.Client.WPF.ViewModels
             }
 
             _serverDetailsService = serverDetailsService;
-            _serverListScrolled = new DelegateCommand((o) => Debug.WriteLine("{0}", Convert.ToString(o)));
+            //_serverListScrolled = new DelegateCommand((o) => Debug.WriteLine("{0}", Convert.ToString(o)));
         }
 
-        readonly ICommand _serverListScrolled;
-
+        readonly ICommand _serverListScrolled = new DelegateCommand((o) => 
+            {
+                Debug.WriteLine(Convert.ToString(o));
+            });
+            
         public ICommand ServerListScrolled
         {
             get 
@@ -150,6 +154,14 @@ namespace SAMP.Client.WPF.ViewModels
             process.StartInfo = new ProcessStartInfo(@"samp://littlewhiteys.co.uk:7778");
             //process.StartInfo = new ProcessStartInfo(@"C:\Program Files (x86)\Rockstar Games\GTA San Andreas\GTA_SA.EXE", "-c -n Test -h littlewhiteys.co.uk -p 7778");
             process.Start();
+        }
+
+        public string VisibleServersStatus
+        {
+            get
+            {
+                return String.Format("{0} shown", TotalServers);
+            }
         }
     }
 }

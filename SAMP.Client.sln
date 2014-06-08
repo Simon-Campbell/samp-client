@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMP.Client.WPF", "SAMP.Client.WPF\SAMP.Client.WPF.csproj", "{AA9BA7BC-5752-4BB3-9099-1A11F5F68170}"
 EndProject
@@ -12,6 +12,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMP.Client.Services.Test", "SAMP.Client.Services.Test\SAMP.Client.Services.Test.csproj", "{9A1C13D2-884B-4EF5-A954-EE25D7654071}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMP.Client.Console", "SAMP.Client.Console\SAMP.Client.Console.csproj", "{613C2AEB-458B-4A62-A04D-9E0EBE52EB5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMP.Client.Spec", "SAMP.Client.Spec\SAMP.Client.Spec.csproj", "{BE95E7A0-3DEE-4D4A-95A1-5102E54E22DD}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "SAMP.Client.Spec.Bindings", "SAMP.Client.Spec.Bindings\SAMP.Client.Spec.Bindings.fsproj", "{617E65C2-25A7-481A-A2BE-A39666F9307C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{613C2AEB-458B-4A62-A04D-9E0EBE52EB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{613C2AEB-458B-4A62-A04D-9E0EBE52EB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{613C2AEB-458B-4A62-A04D-9E0EBE52EB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE95E7A0-3DEE-4D4A-95A1-5102E54E22DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE95E7A0-3DEE-4D4A-95A1-5102E54E22DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE95E7A0-3DEE-4D4A-95A1-5102E54E22DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE95E7A0-3DEE-4D4A-95A1-5102E54E22DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{617E65C2-25A7-481A-A2BE-A39666F9307C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{617E65C2-25A7-481A-A2BE-A39666F9307C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{617E65C2-25A7-481A-A2BE-A39666F9307C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{617E65C2-25A7-481A-A2BE-A39666F9307C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

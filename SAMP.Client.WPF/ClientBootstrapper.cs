@@ -10,14 +10,18 @@ namespace SAMP.Client.WPF
     using Ninject;
     using SAMP.Client.Services;
     using SAMP.Client.WPF.ViewModels;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.ComponentModel.Composition.Primitives;
+    using System.Windows;
 
-    public class ClientBootstrapper : Bootstrapper<MainViewModel>
+    public class ClientBootstrapper : BootstrapperBase
     {
         IKernel _kernel;
 
         public ClientBootstrapper()
         {
-            Start();
+            Initialize();
         }
 
         protected override void Configure()
@@ -53,6 +57,11 @@ namespace SAMP.Client.WPF
         protected override void BuildUp(object instance)
         {
             _kernel.Inject(instance);
+        }
+
+        protected override void OnStartup(object sender, StartupEventArgs e)
+        {
+            DisplayRootViewFor<MainViewModel>();
         }
     }
 }
