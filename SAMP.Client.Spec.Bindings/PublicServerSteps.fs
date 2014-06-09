@@ -6,10 +6,10 @@ open System.Linq
 open TechTalk.SpecFlow
 
 type FakeServer = { Id: int; Address: string; Port: int }
-type FakeServerList = { Public: seq<FakeServer> }
+type FakeServerList = { Public: List<FakeServer> }
 
 type Context() =
-    let servers = { Public = Seq.empty<FakeServer> }
+    let servers = { Public = List.empty<FakeServer> }
 
     member this.Servers =
         servers
@@ -25,19 +25,17 @@ let [<Given>] ``there are (\d+) public servers``(numberOfServers:int) =
 
     let createFakeServer (id:int) =
         { Id = id; Address = createIpv4Address id; Port = 7777 }
-
+    
     client.Servers.Public.Concat (seq { for i in 1 .. numberOfServers -> createFakeServer i })
 
 let [<When>] ``I start the client``() =
     client.Start
 
 let [<Then>] ``I should see (\d+) servers``(numberOfServers:int) =
-    client.Servers.Public |> should haveCount numberOfServers
+    client.Servers.Public |> should haveLength numberOfServers
 
 let [<Given>] ``the reason is because I cannot connect to the master list``() =
     ScenarioContext.Current.Pending()
-        
 
 let [<Then>] ``I should see a message stating why``() =
     ScenarioContext.Current.Pending();
-        
